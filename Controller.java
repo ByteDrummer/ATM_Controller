@@ -10,7 +10,7 @@ public class Controller {
   private final static String CARD_DELIMITER = "@";
 
   // Number of fields in the card data
-  private final static int NUM_CARD_DATA = 3;
+  private final static int NUM_CARD_DATA = 2;
 
   // Index of each field after parsing the card data
   private final static int CARD_NUMBER_I = 0;
@@ -23,9 +23,6 @@ public class Controller {
     // Initialize input scanner
     Scanner scanner = new Scanner(System.in);
 
-    // Be strict with the date format being parsed
-    DATE_FORMAT.setLenient(false);
-
     // Capture SIGINT
     Signal.handle(new Signal("INT"), new SignalHandler() {
       public void handle(Signal arg0) {
@@ -33,9 +30,12 @@ public class Controller {
       }
     });
 
+    // Be strict with the date format being parsed
+    DATE_FORMAT.setLenient(false);
+
     // Controller loop
     while (true) {
-      // wait for card (card number, expiration)
+      // wait for card
       String[] card = getCard(scanner);
 
       // wait for pin number
@@ -45,7 +45,8 @@ public class Controller {
     }
   }
 
-  // Wait for a card to be inserted and return the card number and bank name
+  // Wait for a valid card to be inserted and
+  // return the card number and bank name
   private static String[] getCard(Scanner scanner) {
     String[] card;
 
@@ -65,7 +66,7 @@ public class Controller {
 
     // Check if card has the correct number of fields
     if (card.length < NUM_CARD_DATA) {
-      System.out.print("Your card is missing fields.");
+      System.out.println("Your card is missing fields.");
       return false;
     }
 
@@ -77,18 +78,23 @@ public class Controller {
 
     // Check if the card number exists in the bank
     if (!Bank.cardExists(card[CARD_NUMBER_I])) {
+      System.out.println("Your card isn't registered with the bank.");
       return false;
     }
 
-    // Parse the expiration date and check if its formatted correctly
+    // Parse the expiration date and check if it's formatted correctly
     try {
       expiration = DATE_FORMAT.parse(card[EXPIRATION_I]);
     } catch (ParseException e) {
-      System.out.print("The format of your card's expiration date is invalid.");
+      System.out.println("The format of your card's expiration date is invalid.");
       return false;
     }
 
     // Check if the card is expired
+    if (expiration.before(new Date())) {
+      System.out.println("Your card is expired.");
+      return false;
+    }
 
     return true;
   }
