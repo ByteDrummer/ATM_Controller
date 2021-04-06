@@ -30,15 +30,14 @@ public class Controller {
       String cardNumber = waitForCard(scanner);
 
       // wait for a valid pin number
-      getPin(cardNumber, scanner);
+      waitForPin(cardNumber, scanner);
 
       // wait for account choice
       // see balance/deposit/withdraw
     }
   }
 
-  // Wait for a valid card to be inserted and
-  // return the card number and bank name
+  // Wait for a valid card to be inserted and return the card number
   private static String waitForCard(Scanner scanner) {
     String[] card;
 
@@ -91,8 +90,8 @@ public class Controller {
     return true;
   }
 
-  // Wait for a valid pin to be given and return it
-  private static String getPin(String cardNumber, Scanner scanner) {
+  // Wait for a valid pin to be given
+  private static void waitForPin(String cardNumber, Scanner scanner) {
     String pin;
 
     System.out.println("Enter your PIN number.");
@@ -100,8 +99,6 @@ public class Controller {
     do {
       pin = scanner.nextLine();
     } while (!pinValid(pin, cardNumber)); // Loop while pin is invalid
-
-    return pin;
   }
 
   private static boolean pinValid(String pin, String cardNumber) {
