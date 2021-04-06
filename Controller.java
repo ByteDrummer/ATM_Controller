@@ -1,7 +1,7 @@
 import java.util.Date;
+import java.util.Scanner;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Scanner;
 
 public class Controller {
   // Delimiter used to separate card fields when card is read
@@ -20,13 +20,6 @@ public class Controller {
   public static void main(String[] args) {
     // Initialize input scanner
     Scanner scanner = new Scanner(System.in);
-
-    // Capture SIGINT
-    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-      public void run() {
-        cleanExit(scanner);
-      }
-    }));
 
     // Be strict with the date format being parsed
     DATE_FORMAT.setLenient(false);
@@ -96,15 +89,5 @@ public class Controller {
     }
 
     return true;
-  }
-
-  private static void cleanExit(Scanner scanner) {
-    System.out.println("Shutting down controller");
-
-    if (scanner != null) {
-      scanner.close();
-    }
-
-    System.exit(0);
   }
 }
