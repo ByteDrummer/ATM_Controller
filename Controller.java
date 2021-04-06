@@ -15,11 +15,9 @@ public class Controller {
   // Index of each field after parsing the card data
   private final static int CARD_NUMBER_I = 0;
   private final static int EXPIRATION_I = 1;
-  private final static int BANK_NAME_I = 2;
 
   // Date parser
-  private final static SimpleDateFormat DATE_FORMAT =
-    new SimpleDateFormat("MM/yy");
+  private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/yy");
 
   public static void main(String[] args) {
     // Initialize input scanner
@@ -37,7 +35,7 @@ public class Controller {
 
     // Controller loop
     while (true) {
-      // wait for card (card number, expiration, bank name)
+      // wait for card (card number, expiration)
       String[] card = getCard(scanner);
 
       // wait for pin number
@@ -71,15 +69,16 @@ public class Controller {
       return false;
     }
 
-    // Check if the bank exists
-
     // Check if the card number is numeric
     if (!card[CARD_NUMBER_I].matches("[0-9]+")) {
       System.out.println("You card number doesn't contain only digits.");
       return false;
     }
 
-    // Check if the card number exists in the specified bank
+    // Check if the card number exists in the bank
+    if (!Bank.cardExists(card[CARD_NUMBER_I])) {
+      return false;
+    }
 
     // Parse the expiration date and check if its formatted correctly
     try {
