@@ -27,11 +27,10 @@ public class Controller {
     // Controller loop
     while (true) {
       // wait for card
-      String[] card = getCard(scanner);
-      System.out.println(card[0] + " " + card[1]);
+      String cardNumber = waitForCard(scanner);
 
       // wait for a valid pin number
-      getPin(card[CARD_NUMBER_I], scanner);
+      getPin(cardNumber, scanner);
 
       // wait for account choice
       // see balance/deposit/withdraw
@@ -40,7 +39,7 @@ public class Controller {
 
   // Wait for a valid card to be inserted and
   // return the card number and bank name
-  private static String[] getCard(Scanner scanner) {
+  private static String waitForCard(Scanner scanner) {
     String[] card;
 
     System.out.println("Insert your card.");
@@ -51,7 +50,7 @@ public class Controller {
       card = line.split(CARD_DELIMITER);
     } while (!cardValid(card)); // Loop while the card is invalid
 
-    return card;
+    return card[CARD_NUMBER_I];
   }
 
   private static boolean cardValid(String[] card) {
