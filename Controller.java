@@ -2,8 +2,6 @@ import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
 
 public class Controller {
   // Delimiter used to separate card fields when card is read
@@ -24,11 +22,11 @@ public class Controller {
     Scanner scanner = new Scanner(System.in);
 
     // Capture SIGINT
-    Signal.handle(new Signal("INT"), new SignalHandler() {
-      public void handle(Signal arg0) {
+    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+      public void run() {
         cleanExit(scanner);
       }
-    });
+    }));
 
     // Be strict with the date format being parsed
     DATE_FORMAT.setLenient(false);
@@ -37,6 +35,7 @@ public class Controller {
     while (true) {
       // wait for card
       String[] card = getCard(scanner);
+      System.out.println(card[0] + " " + card[1]);
 
       // wait for pin number
       // ask specific bank if pin is correct
