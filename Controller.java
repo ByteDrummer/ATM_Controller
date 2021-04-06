@@ -30,8 +30,9 @@ public class Controller {
       String[] card = getCard(scanner);
       System.out.println(card[0] + " " + card[1]);
 
-      // wait for pin number
-      // ask specific bank if pin is correct
+      // wait for a valid pin number
+      getPin(card[CARD_NUMBER_I], scanner);
+
       // wait for account choice
       // see balance/deposit/withdraw
     }
@@ -85,6 +86,33 @@ public class Controller {
     // Check if the card is expired
     if (expiration.before(new Date())) {
       System.out.println("Your card is expired.");
+      return false;
+    }
+
+    return true;
+  }
+
+  // Wait for a valid pin to be given and return it
+  private static String getPin(String cardNumber, Scanner scanner) {
+    String pin;
+
+    System.out.println("Enter your PIN number.");
+
+    do {
+      pin = scanner.nextLine();
+    } while (!pinValid(pin, cardNumber)); // Loop while pin is invalid
+
+    return pin;
+  }
+
+  private static boolean pinValid(String pin, String cardNumber) {
+    if (!pin.matches("[0-9]+")) {
+      System.out.println("You pin doesn't contain only digits.");
+      return false;
+    }
+
+    if (!Bank.pinCorrect(pin, cardNumber)) {
+      System.out.println("Incorrect pin.");
       return false;
     }
 
