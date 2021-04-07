@@ -2,6 +2,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -16,9 +17,10 @@ public class Bank {
       return false;
     }
 
-    JSONObject[] accounts = (JSONObject[]) db.get("accounts");
+    JSONArray accounts = (JSONArray) db.get("members");
 
-    for (JSONObject account : accounts) {
+    for (Object accountObj : accounts) {
+      JSONObject account = (JSONObject) accountObj;
       if (cardNumber.equals((String) account.get("cardNumber"))) {
         return true;
       }
