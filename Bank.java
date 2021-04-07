@@ -10,6 +10,7 @@ import org.json.simple.parser.ParseException;
 public class Bank {
   private final static String DB_PATH = "./BankDB.json";
 
+  // Check the database to see if the card exists
   public static boolean cardExists(String cardNumber) {
     JSONObject client = getClient(cardNumber);
 
@@ -20,6 +21,7 @@ public class Bank {
     return true;
   }
 
+  // Check the database to see if the pin for a specific card is correct
   public static boolean pinCorrect(String pin, String cardNumber) {
     JSONObject client = getClient(cardNumber);
 
@@ -34,6 +36,7 @@ public class Bank {
     return false;
   }
 
+  // Get the client for a specific card number
   public static JSONObject getClient(String cardNumber) {
     JSONArray clients = getClients();
 
@@ -41,6 +44,7 @@ public class Bank {
       return null;
     }
 
+    // Loop through the list of clients and find a matching one
     for (Object clientObj : clients) {
       JSONObject client = (JSONObject) clientObj;
 
@@ -52,6 +56,7 @@ public class Bank {
     return null;
   }
 
+  // Get a list of clients in the database
   public static JSONArray getClients() {
     FileReader reader;
     JSONParser parser = new JSONParser();

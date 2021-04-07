@@ -18,19 +18,16 @@ public class Controller {
   private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/yy");
 
   public static void main(String[] args) {
-    // Initialize input scanner
-    Scanner scanner = new Scanner(System.in);
-
     // Be strict with the date format being parsed
     DATE_FORMAT.setLenient(false);
 
     // Controller loop
     while (true) {
       // wait for card
-      String cardNumber = waitForCard(scanner);
+      String cardNumber = waitForCard();
 
       // wait for a valid pin number
-      waitForPin(cardNumber, scanner);
+      waitForPin(cardNumber);
 
       // wait for account choice
       // see balance/deposit/withdraw
@@ -38,7 +35,8 @@ public class Controller {
   }
 
   // Wait for a valid card to be inserted and return the card number
-  private static String waitForCard(Scanner scanner) {
+  private static String waitForCard() {
+    Scanner scanner = new Scanner(System.in);
     String[] card;
 
     System.out.println("Insert your card.");
@@ -48,6 +46,8 @@ public class Controller {
       String line = scanner.nextLine();
       card = line.split(CARD_DELIMITER);
     } while (!cardValid(card)); // Loop while the card is invalid
+
+    scanner.close();
 
     return card[CARD_NUMBER_I];
   }
@@ -91,7 +91,8 @@ public class Controller {
   }
 
   // Wait for a valid pin to be given
-  private static void waitForPin(String cardNumber, Scanner scanner) {
+  private static void waitForPin(String cardNumber) {
+    Scanner scanner = new Scanner(System.in);
     String pin;
 
     System.out.println("Enter your PIN number.");
@@ -99,14 +100,18 @@ public class Controller {
     do {
       pin = scanner.nextLine();
     } while (!pinValid(pin, cardNumber)); // Loop while pin is invalid
+
+    scanner.close();
   }
 
   private static boolean pinValid(String pin, String cardNumber) {
+    // Check if the pin is numeric
     if (!pin.matches("[0-9]+")) {
       System.out.println("You pin doesn't contain only digits.");
       return false;
     }
 
+    // Check if the entered pin matches the card's pin
     if (!Bank.pinCorrect(pin, cardNumber)) {
       System.out.println("Incorrect pin.");
       return false;
