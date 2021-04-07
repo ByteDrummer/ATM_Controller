@@ -29,7 +29,34 @@ public class Bank {
     return false;
   }
 
-  public static JSONObject readDB() {
+  public static boolean pinCorrect(String pin, String cardNumber) {
+    JSONArray clients = getClients();
+
+    if (clients == null) {
+      return false;
+    }
+
+  }
+
+  public static JSONObject getClient(String cardNumber) {
+    JSONArray clients = getClients();
+
+    if (clients == null) {
+      return null;
+    }
+
+    for (Object clientObj : clients) {
+      JSONObject client = (JSONObject) clientObj;
+
+      if (cardNumber.equals((String) client.get("cardNumber"))) {
+        return client;
+      }
+    }
+
+    return null;
+  }
+
+  public static JSONArray getClients() {
     FileReader reader;
     JSONParser parser = new JSONParser();
     JSONObject db;
