@@ -1,7 +1,8 @@
 {
-  "members": [
+  "clients": [
     {
       "cardNumber": "232121521",
+      "pin": "1234",
       "balance": 100
     }
   ]

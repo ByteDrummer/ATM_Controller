@@ -11,31 +11,27 @@ public class Bank {
   private final static String DB_PATH = "./BankDB.json";
 
   public static boolean cardExists(String cardNumber) {
-    JSONObject db = readDB();
+    JSONObject client = getClient(cardNumber);
 
-    if (db == null) {
+    if (client == null) {
       return false;
     }
 
-    JSONArray accounts = (JSONArray) db.get("members");
-
-    for (Object accountObj : accounts) {
-      JSONObject account = (JSONObject) accountObj;
-      if (cardNumber.equals((String) account.get("cardNumber"))) {
-        return true;
-      }
-    }
-
-    return false;
+    return true;
   }
 
   public static boolean pinCorrect(String pin, String cardNumber) {
-    JSONArray clients = getClients();
+    JSONObject client = getClient(cardNumber);
 
-    if (clients == null) {
+    if (client == null) {
       return false;
     }
 
+    if (pin.equals((String) client.get("pin"))) {
+      return true;
+    }
+
+    return false;
   }
 
   public static JSONObject getClient(String cardNumber) {
@@ -60,6 +56,7 @@ public class Bank {
     FileReader reader;
     JSONParser parser = new JSONParser();
     JSONObject db;
+    JSONArray clients;
 
     try {
       reader = new FileReader(DB_PATH);
@@ -75,6 +72,8 @@ public class Bank {
       return null;
     }
 
-    return db;
+    clients = (JSONArray) db.get("clients");
+
+    return clients;
   }
 }
