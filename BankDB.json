@@ -3,7 +3,12 @@
     {
       "cardNumber": "232121521",
       "pin": "1234",
-      "balance": 100
+      "savings": {
+        "balance": 25
+      },
+      "checking": {
+        "balance": 2000
+      }
     }
   ]
 }
