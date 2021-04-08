@@ -36,6 +36,8 @@ public class Controller {
       waitForPin(cardNumber);
 
       // wait for account choice
+      waitForAccountChoice(cardNumber);
+
       // see balance/deposit/withdraw
     }
   }
@@ -118,5 +120,28 @@ public class Controller {
     }
 
     return true;
+  }
+
+  // Wait for an account choice of checking or savings
+  private static String waitForAccountChoice(String cardNumber) {
+    String choice;
+
+    System.out.println("Pick an account (savings or checking).");
+
+    do {
+      choice = scanner.nextLine();
+    } while (!accountValid(choice)); // Loop until a valid choice is given
+
+    return choice;
+  }
+
+  private static boolean accountValid(String choice) {
+    if (choice.equals("savings") || choice.equals("checking")) {
+      return true;
+    }
+
+    System.out.println("That's not a valid account choice.");
+
+    return false;
   }
 }
