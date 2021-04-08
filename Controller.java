@@ -28,6 +28,8 @@ public class Controller {
   private final static String SEE_BALANCE = "1";
   private final static String DEPOSIT = "2";
   private final static String WITHDRAW = "3";
+  private final static String SWITCH = "4";
+  private final static String DONE = "5";
 
   public static void main(String[] args) {
     // Initialize scanner
@@ -44,14 +46,24 @@ public class Controller {
       // wait for a valid pin number
       waitForPin(cardNumber);
 
-      // wait for account choice
-      String account = waitForAccountChoice(cardNumber);
+      // loop while the user wants to switch accounts
+      String action;
+      do {
+        // wait for account choice
+        String accountName = waitForAccountChoice(cardNumber);
 
-      // wait for choice of see balance/deposit/withdraw
-      String action = waitForActionChoice();
+        // Loop while the user is not done with the current account
+        do {
+          // wait for choice of see balance/deposit/withdraw/done/switch account
+          action = waitForActionChoice();
 
-      // perform action
-      performAction(action, account, cardNumber);
+          if (!action.equals(DONE) && !action.equals(SWITCH)) {
+            performAction(action, accountName, cardNumber);
+          }
+        } while (!action.equals(DONE) && !action.equals(SWITCH));
+      } while (action.equals(SWITCH));
+
+      System.out.println("Goodbye!");
     }
   }
 
@@ -145,7 +157,11 @@ public class Controller {
       choice = scanner.nextLine();
     } while (!accountValid(choice)); // Loop until a valid choice is given
 
-    return choice;
+    if (choice.equals(SAVINGS)) {
+      return "savings";
+    } else {
+      return "checking";
+    }
   }
 
   private static boolean accountValid(String choice) {
@@ -161,7 +177,7 @@ public class Controller {
   private static String waitForActionChoice() {
     String choice;
 
-    System.out.println("What would you like to do? (1 see balance, 2 deposit, 3 withdraw)");
+    System.out.println("What would you like to do? (1 see balance, 2 deposit, 3 withdraw, 4 switch account, 5 done)");
 
     do {
       choice = scanner.nextLine();
@@ -171,11 +187,11 @@ public class Controller {
   }
 
   private static boolean actionValid(String choice) {
-    if (choice.equals(SEE_BALANCE) || choice.equals(DEPOSIT) || choice.equals(WITHDRAW)) {
+    if (choice.equals(SEE_BALANCE) || choice.equals(DEPOSIT) || choice.equals(WITHDRAW) || choice.equals(SWITCH) || choice.equals(DONE)) {
       return true;
     }
 
-    System.out.println("That is not a valid action");
+    System.out.println("That is not a valid action.");
 
     return false;
   }
