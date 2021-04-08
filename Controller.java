@@ -20,6 +20,15 @@ public class Controller {
   // Date parser
   private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/yy");
 
+  // Choices for accounts
+  private final static String SAVINGS = "1";
+  private final static String CHECKING = "2";
+
+  // Choice for account actions
+  private final static String SEE_BALANCE = "1";
+  private final static String DEPOSIT = "2";
+  private final static String WITHDRAW = "3";
+
   public static void main(String[] args) {
     // Initialize scanner
     scanner = new Scanner(System.in);
@@ -38,8 +47,11 @@ public class Controller {
       // wait for account choice
       String account = waitForAccountChoice(cardNumber);
 
-      // wai for choice of see balance/deposit/withdraw
+      // wait for choice of see balance/deposit/withdraw
       String action = waitForActionChoice();
+
+      // perform action
+      performAction(action, account, cardNumber);
     }
   }
 
@@ -137,7 +149,7 @@ public class Controller {
   }
 
   private static boolean accountValid(String choice) {
-    if (choice.equals("1") || choice.equals("2")) {
+    if (choice.equals(SAVINGS) || choice.equals(CHECKING)) {
       return true;
     }
 
@@ -159,12 +171,18 @@ public class Controller {
   }
 
   private static boolean actionValid(String choice) {
-    if (choice.equals("1") || choice.equals("2") || choice.equals("3")) {
+    if (choice.equals(SEE_BALANCE) || choice.equals(DEPOSIT) || choice.equals(WITHDRAW)) {
       return true;
     }
 
     System.out.println("That is not a valid action");
 
     return false;
+  }
+
+  private static void performAction(String action, String account, String cardNumber) {
+    if (action.equals(SEE_BALANCE)) {
+      System.out.println("Balance is: " + Bank.getBalance(account, cardNumber));
+    }
   }
 }
