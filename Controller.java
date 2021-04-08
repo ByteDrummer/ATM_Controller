@@ -36,9 +36,10 @@ public class Controller {
       waitForPin(cardNumber);
 
       // wait for account choice
-      waitForAccountChoice(cardNumber);
+      String account = waitForAccountChoice(cardNumber);
 
-      // see balance/deposit/withdraw
+      // wai for choice of see balance/deposit/withdraw
+      String action = waitForActionChoice();
     }
   }
 
@@ -126,7 +127,7 @@ public class Controller {
   private static String waitForAccountChoice(String cardNumber) {
     String choice;
 
-    System.out.println("Pick an account (savings or checking).");
+    System.out.println("Pick an account (1 savings, 2 checking).");
 
     do {
       choice = scanner.nextLine();
@@ -136,11 +137,33 @@ public class Controller {
   }
 
   private static boolean accountValid(String choice) {
-    if (choice.equals("savings") || choice.equals("checking")) {
+    if (choice.equals("1") || choice.equals("2")) {
       return true;
     }
 
     System.out.println("That's not a valid account choice.");
+
+    return false;
+  }
+
+  private static String waitForActionChoice() {
+    String choice;
+
+    System.out.println("What would you like to do? (1 see balance, 2 deposit, 3 withdraw)");
+
+    do {
+      choice = scanner.nextLine();
+    } while (!actionValid(choice)); // Loop until a valid action is given
+
+    return choice;
+  }
+
+  private static boolean actionValid(String choice) {
+    if (choice.equals("1") || choice.equals("2") || choice.equals("3")) {
+      return true;
+    }
+
+    System.out.println("That is not a valid action");
 
     return false;
   }
