@@ -4,6 +4,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class Controller {
+  // Input stream scanner
+  private static Scanner scanner;
+
   // Delimiter used to separate card fields when card is read
   private final static String CARD_DELIMITER = "@";
 
@@ -18,6 +21,9 @@ public class Controller {
   private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/yy");
 
   public static void main(String[] args) {
+    // Initialize scanner
+    scanner = new Scanner(System.in);
+
     // Be strict with the date format being parsed
     DATE_FORMAT.setLenient(false);
 
@@ -36,7 +42,6 @@ public class Controller {
 
   // Wait for a valid card to be inserted and return the card number
   private static String waitForCard() {
-    Scanner scanner = new Scanner(System.in);
     String[] card;
 
     System.out.println("Insert your card.");
@@ -46,8 +51,6 @@ public class Controller {
       String line = scanner.nextLine();
       card = line.split(CARD_DELIMITER);
     } while (!cardValid(card)); // Loop while the card is invalid
-
-    scanner.close();
 
     return card[CARD_NUMBER_I];
   }
@@ -92,7 +95,6 @@ public class Controller {
 
   // Wait for a valid pin to be given
   private static void waitForPin(String cardNumber) {
-    Scanner scanner = new Scanner(System.in);
     String pin;
 
     System.out.println("Enter your PIN number.");
@@ -100,8 +102,6 @@ public class Controller {
     do {
       pin = scanner.nextLine();
     } while (!pinValid(pin, cardNumber)); // Loop while pin is invalid
-
-    scanner.close();
   }
 
   private static boolean pinValid(String pin, String cardNumber) {
