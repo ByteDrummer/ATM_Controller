@@ -81,4 +81,11 @@ public class Bank {
 
     return clients;
   }
+
+  public static long getBalance(String accountName, String cardNumber) {
+    JSONObject client = getClient(cardNumber);
+    JSONObject account = (JSONObject) client.get(accountName);
+
+    return (long) account.get("balance");
+  }
 }
