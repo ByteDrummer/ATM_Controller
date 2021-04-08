@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -187,7 +188,8 @@ public class Controller {
   }
 
   private static boolean actionValid(String choice) {
-    if (choice.equals(SEE_BALANCE) || choice.equals(DEPOSIT) || choice.equals(WITHDRAW) || choice.equals(SWITCH) || choice.equals(DONE)) {
+    if (choice.equals(SEE_BALANCE) || choice.equals(DEPOSIT) || choice.equals(WITHDRAW) || choice.equals(SWITCH)
+        || choice.equals(DONE)) {
       return true;
     }
 
@@ -199,6 +201,27 @@ public class Controller {
   private static void performAction(String action, String account, String cardNumber) {
     if (action.equals(SEE_BALANCE)) {
       System.out.println("Balance is: " + Bank.getBalance(account, cardNumber));
+    }
+
+    if (action.equals(DEPOSIT)) {
+      int quantity;
+      boolean validInput;
+
+      System.out.println("How much would you like to deposit?");
+
+      do {
+        try {
+          validInput = true;
+          quantity = scanner.nextInt();
+        } catch (InputMismatchException e) { // In case input isn't an int
+          System.out.println("Invalid quantity.");
+          validInput = false;
+        }
+
+        scanner.nextLine(); // Clear the line
+      } while (!validInput); // Loop until a valid quantity is given
+
+      // Bank.deposit(account, cardNumber);
     }
   }
 }
