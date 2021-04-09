@@ -31,18 +31,11 @@ public class Bank {
     return false;
   }
 
-  // Check the database to see if the pin for a specific card is correct
-  public static boolean pinCorrect(String pin, String cardNumber) {
-    Object[] result = getClient(cardNumber);
-    JsonObject client;
+  // Check if the pin for a specific card is correct
+  public boolean pinCorrect(String pin, String cardNumber) {
+    Client client = getClient(cardNumber);
 
-    if (result == null) {
-      return false;
-    }
-
-    client = (JsonObject) result[0];
-
-    if (pin.equals((String) client.get("pin"))) {
+    if (client != null && client.getPin().equals(pin)) {
       return true;
     }
 
