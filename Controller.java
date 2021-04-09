@@ -55,7 +55,7 @@ public class Controller {
       bank = getBank(card[BANK_NAME_I]);
 
       // wait for a valid pin number
-      waitForPin(cardNumber);
+      waitForPin(cardNumber, bank);
 
       // loop while the user wants to switch accounts
       String action;
@@ -69,7 +69,7 @@ public class Controller {
           action = waitForActionChoice();
 
           if (!action.equals(DONE) && !action.equals(SWITCH)) {
-            performAction(action, accountName, cardNumber);
+            performAction(action, accountName, cardNumber, bank);
           }
         } while (!action.equals(DONE) && !action.equals(SWITCH));
       } while (action.equals(SWITCH));
@@ -151,17 +151,17 @@ public class Controller {
   }
 
   // Wait for a valid pin to be given
-  private static void waitForPin(String cardNumber) {
+  private static void waitForPin(String cardNumber, Bank bank) {
     String pin;
 
     System.out.println("Enter your PIN number.");
 
     do {
       pin = scanner.nextLine();
-    } while (!pinValid(pin, cardNumber)); // Loop while pin is invalid
+    } while (!pinValid(pin, cardNumber, bank)); // Loop while pin is invalid
   }
 
-  private static boolean pinValid(String pin, String cardNumber) {
+  private static boolean pinValid(String pin, String cardNumber, Bank bank) {
     // Check if the pin is numeric
     if (!pin.matches("[0-9]+")) {
       System.out.println("You pin doesn't contain only digits.");
@@ -169,7 +169,7 @@ public class Controller {
     }
 
     // Check if the entered pin matches the card's pin
-    if (!Bank.pinCorrect(pin, cardNumber)) {
+    if (!bank.pinCorrect(pin, cardNumber)) {
       System.out.println("Incorrect pin.");
       return false;
     }
@@ -227,9 +227,9 @@ public class Controller {
     return false;
   }
 
-  private static void performAction(String action, String account, String cardNumber) {
+  private static void performAction(String action, String account, String cardNumber, Bank bank) {
     if (action.equals(SEE_BALANCE)) {
-      System.out.println("Balance is: " + Bank.getBalance(account, cardNumber));
+      System.out.println("Balance is: " + bank.getBalance(account, cardNumber));
     }
 
     if (action.equals(DEPOSIT)) {
@@ -251,7 +251,7 @@ public class Controller {
         scanner.nextLine(); // Clear the line
       } while (!validInput); // Loop until a valid quantity is given
 
-      Bank.deposit(quantity, account, cardNumber);
+      bank.deposit(quantity, account, cardNumber);
     }
   }
 }
