@@ -6,8 +6,9 @@ import java.io.Writer;
 import java.util.ArrayList;
 
 public class Bank {
-  String name;
-  ArrayList<Client> clients;
+  private static final int DEFAULT_BALANCE = Integer.MIN_VALUE;
+  private String name;
+  private ArrayList<Client> clients;
 
   public Bank(String name) {
     this.name = name;
@@ -42,9 +43,8 @@ public class Bank {
     return false;
   }
 
-  // Get the client for a specific card number and return a reference to the
-  // database
-  public Client getClient(String cardNumber) {
+  // Get the client for a specific card number
+  private Client getClient(String cardNumber) {
     for (Client client : clients) {
       if (client.getCardNumber().equals(cardNumber)) {
         return client;
@@ -54,37 +54,29 @@ public class Bank {
     return null;
   }
 
-  public static int getBalance(String accountName, String cardNumber) {
-    Object[] result = getAccount(accountName, cardNumber);
-    JsonObject account;
-    JsonKey balanceKey;
+  // Get the balance for a checking account given a card number
+  public int getCheckingBalance(String cardNumber) {
+    Client client = getClient(cardNumber);
 
-    if (result == null) {
-      return Integer.MIN_VALUE;
+    if (client != null) {
+      return client.getCheckingBalance();
     }
 
-    balanceKey = Jsoner.mintJsonKey("balance", DEFAULT_BALANCE);
-    account = (JsonObject) result[0];
-
-    return account.getInteger(balanceKey);
+    return DEFAULT_BALANCE;
   }
 
-  public static Object[] getAccount(String accountName, String cardNumber) {
-    Object[] result = getClient(cardNumber);
-    JsonObject client;
-    JsonObject account;
+  // Get the balance for a savings account given a card number
+  public int getSavingsBalance(String cardNumber) {
+    Client client = getClient(cardNumber);
 
-    if (result == null) {
-      return null;
+    if (client != null) {
+      return client.getSavingsBalance();
     }
 
-    client = (JsonObject) result[0];
-    account = (JsonObject) client.get(accountName);
-
-    return new Object[] { account, result[1] };
+    return DEFAULT_BALANCE;
   }
 
-  public static void deposit(int quantity, String accountName, String cardNumber) {
+  private static void deposit(int quantity, String accountName, String cardNumber) {
     Object[] result = getAccount(accountName, cardNumber);
 
     if (result != null) {
