@@ -3,18 +3,21 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-
-import com.github.cliftonlabs.json_simple.JsonArray;
-import com.github.cliftonlabs.json_simple.JsonException;
-import com.github.cliftonlabs.json_simple.JsonKey;
-import com.github.cliftonlabs.json_simple.JsonObject;
-import com.github.cliftonlabs.json_simple.Jsoner;
+import java.util.ArrayList;
 
 public class Bank {
-  private final static String DB_PATH = "./BankDB.json";
+  String name;
+  ArrayList<Client> clients;
 
-  private final static int DEFAULT_BALANCE = Integer.MIN_VALUE;
-  private final static String DEFAULT_CARDNUM = "-1";
+  public Bank (String name) {
+    this.name = name;
+    clients = new ArrayList<Client>();
+  }
+
+  public void addClient(String cardNumber, int checkingBalance, int savingsBalance) {
+    Client client = new Client(cardNumber, checkingBalance, savingsBalance);
+    clients.add(client);
+  }
 
   // Check the database to see if the card exists
   public static boolean cardExists(String cardNumber) {
@@ -56,32 +59,19 @@ public class Bank {
       return null;
     }
 
-
-
-
+    cardNumberKey = Jsoner.mintJsonKey("cardNumber", DEFAULT_CARDNUM);
+    clients = (JsonArray) getClients()[0];
 
     JsonObject db = (JsonObject) result[1];
     System.out.println(Jsoner.prettyPrint(db.toJson()));
-
-
-
-
-
-
-    cardNumberKey = Jsoner.mintJsonKey("cardNumber", DEFAULT_CARDNUM);
-    clients = (JsonArray) getClients()[0];
+    JsonObject test = (JsonObject) clients.get(0);
+    test.put("2", "2");
+    System.out.println(test.toJson());
+    System.out.println(Jsoner.prettyPrint(db.toJson()));
 
     // Loop through the list of clients and find a matching one
     for (Object clientObj : clients) {
       JsonObject client = (JsonObject) clientObj;
-
-
-
-      client.put("2", "2");
-      System.out.println(client.toJson());
-      System.out.println(Jsoner.prettyPrint(db.toJson()));
-
-
 
       if (cardNumber.equals(client.getString(cardNumberKey))) {
         return new Object[] { client, result[1] };
