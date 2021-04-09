@@ -1,8 +1,3 @@
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 
 public class Bank {
@@ -80,49 +75,21 @@ public class Bank {
     return DEFAULT_BALANCE;
   }
 
-  // TODO weird stuff here
-  public void deposit(int quantity, String accountName, String cardNumber) {
-    Object[] result = getAccount(accountName, cardNumber);
+  // Update checking balance given card number
+  public void updateChecking(int quantity, String cardNumber) {
+    Client client = getClient(cardNumber);
 
-    if (result != null) {
-      JsonObject db = (JsonObject) result[1];
-      JsonObject account;
-      JsonKey balanceKey = Jsoner.mintJsonKey("balance", DEFAULT_BALANCE);
-      int balance;
-      Writer writer;
+    if (client != null) {
+      client.updateChecking(quantity);
+    }
+  }
 
-      account = (JsonObject) result[0];
-      balance = account.getInteger(balanceKey) + quantity;
+  // Update savings balance given card number
+  public void updateSavings(int quantity, String cardNumber) {
+    Client client = getClient(cardNumber);
 
-      account.put("balance", balance);
-
-      // write to output file
-      try {
-        writer = new FileWriter(DB_PATH);
-      } catch (IOException e) {
-        e.printStackTrace();
-        return;
-      }
-
-      try {
-        writer.write(Jsoner.prettyPrint(db.toJson()));
-      } catch (IOException e) {
-        e.printStackTrace();
-
-        try {
-          writer.close();
-        } catch (IOException e1) {
-          e1.printStackTrace();
-        }
-
-        return;
-      }
-
-      try {
-        writer.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+    if (client != null) {
+      client.updateSavings(quantity);
     }
   }
 }
