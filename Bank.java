@@ -15,6 +15,10 @@ public class Bank {
     clients = new ArrayList<Client>();
   }
 
+  public String getName() {
+    return name;
+  }
+
   // Add a client to the list of clients
   public void addClient(String cardNumber, String pin, int checkingBalance, int savingsBalance) {
     Client client = new Client(cardNumber, pin, checkingBalance, savingsBalance);
@@ -76,7 +80,8 @@ public class Bank {
     return DEFAULT_BALANCE;
   }
 
-  private static void deposit(int quantity, String accountName, String cardNumber) {
+  // TODO weird stuff here
+  public void deposit(int quantity, String accountName, String cardNumber) {
     Object[] result = getAccount(accountName, cardNumber);
 
     if (result != null) {
