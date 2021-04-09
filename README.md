@@ -4,4 +4,5 @@ On Ubuntu:\
 `sudo apt install default-jdk` to install jdk\
 `sudo apt install default-jre` to install jre
 
-Use `javac *.java -cp lib/*.jar` to compile and `java Controller` to run
+Use the `buildAndRun.sh` to run the controller\
+TODO: add how to run tests
