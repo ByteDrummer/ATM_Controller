@@ -14,22 +14,21 @@ public class Bank {
     clients = new ArrayList<Client>();
   }
 
+  // Add a client to the list of clients
   public void addClient(String cardNumber, String pin, int checkingBalance, int savingsBalance) {
-    // check if client
-
     Client client = new Client(cardNumber, pin, checkingBalance, savingsBalance);
     clients.add(client);
   }
 
-  // Check the database to see if the card exists
-  public static boolean cardExists(String cardNumber) {
-    Object[] result = getClient(cardNumber);
-
-    if (result == null) {
-      return false;
+  // Check if the cardNumber exists
+  public boolean cardExists(String cardNumber) {
+    for (Client client : clients) {
+      if (client.getCardNumber().equals(cardNumber)) {
+        return true;
+      }
     }
 
-    return true;
+    return false;
   }
 
   // Check the database to see if the pin for a specific card is correct
