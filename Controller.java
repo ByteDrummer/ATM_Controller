@@ -7,16 +7,17 @@ import java.text.SimpleDateFormat;
 public class Controller {
   // Input stream scanner
   private static Scanner scanner;
+  private static Bank[] banks;
 
   // Delimiter used to separate card fields when card is read
   private final static String CARD_DELIMITER = "@";
 
   // Number of fields in the card data
-  private final static int NUM_CARD_DATA = 2;
-
+  private final static int NUM_CARD_DATA = 3;
   // Index of each field after parsing the card data
   private final static int CARD_NUMBER_I = 0;
   private final static int EXPIRATION_I = 1;
+  private final static int BANK_NAME_I = 2;
 
   // Date parser
   private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/yy");
@@ -24,6 +25,7 @@ public class Controller {
   // Choices for accounts
   private final static String SAVINGS = "1";
   private final static String CHECKING = "2";
+  //TODO return only these constants in selection and decide which account to use
 
   // Choice for account actions
   private final static String SEE_BALANCE = "1";
@@ -35,6 +37,8 @@ public class Controller {
   public static void main(String[] args) {
     // Initialize scanner
     scanner = new Scanner(System.in);
+
+    //TODO init banks
 
     // Be strict with the date format being parsed
     DATE_FORMAT.setLenient(false);
@@ -68,8 +72,8 @@ public class Controller {
     }
   }
 
-  // Wait for a valid card to be inserted and return the card number
-  private static String waitForCard() {
+  // Wait for a valid card to be inserted and return card's data
+  private static String[] waitForCard() {
     String[] card;
 
     System.out.println("Insert your card.");
@@ -80,7 +84,7 @@ public class Controller {
       card = line.split(CARD_DELIMITER);
     } while (!cardValid(card)); // Loop while the card is invalid
 
-    return card[CARD_NUMBER_I];
+    return card;
   }
 
   private static boolean cardValid(String[] card) {
@@ -89,6 +93,17 @@ public class Controller {
     // Check if card has the correct number of fields
     if (card.length < NUM_CARD_DATA) {
       System.out.println("Your card is missing fields.");
+      return false;
+    }
+
+    // Check if the bank exists
+    boolean bankExists = false;
+    for (Bank bank : banks) {
+      if (bank.getName().equals(card[BANK_NAME_I])) {
+        bankExists = true;
+      }
+    }
+    if (!bankExists) {
       return false;
     }
 
@@ -204,7 +219,7 @@ public class Controller {
     }
 
     if (action.equals(DEPOSIT)) {
-      int quantity;
+      int quantity = 0;
       boolean validInput;
 
       System.out.println("How much would you like to deposit?");
@@ -212,6 +227,7 @@ public class Controller {
       do {
         try {
           validInput = true;
+          // TODO get absolute value
           quantity = scanner.nextInt();
         } catch (InputMismatchException e) { // In case input isn't an int
           System.out.println("Invalid quantity.");
@@ -221,7 +237,7 @@ public class Controller {
         scanner.nextLine(); // Clear the line
       } while (!validInput); // Loop until a valid quantity is given
 
-      // Bank.deposit(account, cardNumber);
+      Bank.deposit(quantity, account, cardNumber);
     }
   }
 }
