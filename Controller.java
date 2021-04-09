@@ -37,7 +37,8 @@ public class Controller {
     // Initialize scanner
     scanner = new Scanner(System.in);
 
-    // TODO init banks
+    // Initialize an array of banks with clients
+    initializeBanks();
 
     // Be strict with the date format being parsed
     DATE_FORMAT.setLenient(false);
@@ -75,6 +76,18 @@ public class Controller {
 
       System.out.println("Goodbye!");
     }
+  }
+
+  private static void initializeBanks() {
+    Bank bank1 = new Bank("BoA");
+    bank1.addClient("123", "123", 0, 0);
+    bank1.addClient("1234", "1234", 262, 4353);
+
+    Bank bank2 = new Bank("Fargo");
+    bank2.addClient("321", "321", 50, 25);
+    bank2.addClient("4321", "4321", 6547, 769085);
+
+    banks = new Bank[]{bank1, bank2};
   }
 
   // Wait for a valid card to be inserted and return card's data
