@@ -25,7 +25,6 @@ public class Controller {
   // Choices for accounts
   private final static String SAVINGS = "1";
   private final static String CHECKING = "2";
-  // TODO return only these constants in selection and decide which account to use
 
   // Choice for account actions
   private final static String SEE_BALANCE = "1";
@@ -234,19 +233,17 @@ public class Controller {
       }
 
       System.out.println("Balance is: " + balance);
-    }
-
-    if (action.equals(DEPOSIT)) {
+    } else {
       int quantity = 0;
       boolean validInput;
 
-      System.out.println("How much would you like to deposit?");
+      System.out.println("Enter a quantity.");
 
       do {
+        validInput = true;
+
         try {
-          validInput = true;
-          // TODO get absolute value
-          quantity = scanner.nextInt();
+          quantity = Math.abs(scanner.nextInt());
         } catch (InputMismatchException e) { // In case input isn't an int
           System.out.println("Invalid quantity.");
           validInput = false;
@@ -255,7 +252,15 @@ public class Controller {
         scanner.nextLine(); // Clear the line
       } while (!validInput); // Loop until a valid quantity is given
 
-      bank.deposit(quantity, account, cardNumber);
+      if (action.equals(WITHDRAW)) {
+        quantity = -1 * quantity;
+      }
+
+      if (account.equals(CHECKING)){
+        bank.updateChecking(quantity, cardNumber);
+      } else {
+        bank.updateSavings(quantity, cardNumber);
+      }
     }
   }
 }
