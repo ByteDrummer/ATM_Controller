@@ -22,10 +22,10 @@ public class Bank {
 
   // Check if the cardNumber exists
   public boolean cardExists(String cardNumber) {
-    for (Client client : clients) {
-      if (client.getCardNumber().equals(cardNumber)) {
-        return true;
-      }
+    Client client = getClient(cardNumber);
+
+    if (client != null) {
+      return true;
     }
 
     return false;
@@ -51,60 +51,14 @@ public class Bank {
 
   // Get the client for a specific card number and return a reference to the
   // database
-  public static Object[] getClient(String cardNumber) {
-    Object[] result = getClients();
-    JsonArray clients;
-    JsonKey cardNumberKey;
-
-    if (result == null) {
-      return null;
-    }
-
-    cardNumberKey = Jsoner.mintJsonKey("cardNumber", DEFAULT_CARDNUM);
-    clients = (JsonArray) getClients()[0];
-
-    JsonObject db = (JsonObject) result[1];
-    System.out.println(Jsoner.prettyPrint(db.toJson()));
-    JsonObject test = (JsonObject) clients.get(0);
-    test.put("2", "2");
-    System.out.println(test.toJson());
-    System.out.println(Jsoner.prettyPrint(db.toJson()));
-
-    // Loop through the list of clients and find a matching one
-    for (Object clientObj : clients) {
-      JsonObject client = (JsonObject) clientObj;
-
-      if (cardNumber.equals(client.getString(cardNumberKey))) {
-        return new Object[] { client, result[1] };
+  public Client getClient(String cardNumber) {
+    for (Client client : clients) {
+      if (client.getCardNumber().equals(cardNumber)) {
+        return client;
       }
     }
 
     return null;
-  }
-
-  // Get a list of clients in the database and return reference to the database
-  public static Object[] getClients() {
-    FileReader reader;
-    JsonObject db;
-    JsonArray clients;
-
-    try {
-      reader = new FileReader(DB_PATH);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-      return null;
-    }
-
-    try {
-      db = (JsonObject) Jsoner.deserialize(reader);
-    } catch (JsonException e) {
-      e.printStackTrace();
-      return null;
-    }
-
-    clients = (JsonArray) db.get("clients");
-
-    return new Object[] { clients, db };
   }
 
   public static int getBalance(String accountName, String cardNumber) {
