@@ -61,7 +61,7 @@ public class Controller {
       String action;
       do {
         // wait for account choice
-        String accountName = waitForAccountChoice(cardNumber);
+        String account = waitForAccountChoice(cardNumber);
 
         // Loop while the user is not done with the current account
         do {
@@ -69,7 +69,7 @@ public class Controller {
           action = waitForActionChoice();
 
           if (!action.equals(DONE) && !action.equals(SWITCH)) {
-            performAction(action, accountName, cardNumber, bank);
+            performAction(action, account, cardNumber, bank);
           }
         } while (!action.equals(DONE) && !action.equals(SWITCH));
       } while (action.equals(SWITCH));
@@ -187,11 +187,7 @@ public class Controller {
       choice = scanner.nextLine();
     } while (!accountValid(choice)); // Loop until a valid choice is given
 
-    if (choice.equals(SAVINGS)) {
-      return "savings";
-    } else {
-      return "checking";
-    }
+    return choice;
   }
 
   private static boolean accountValid(String choice) {
@@ -229,7 +225,15 @@ public class Controller {
 
   private static void performAction(String action, String account, String cardNumber, Bank bank) {
     if (action.equals(SEE_BALANCE)) {
-      System.out.println("Balance is: " + bank.getBalance(account, cardNumber));
+      int balance;
+
+      if (account.equals(CHECKING)) {
+        balance = bank.getCheckingBalance(cardNumber);
+      } else {
+        balance = bank.getSavingsBalance(cardNumber);
+      }
+
+      System.out.println("Balance is: " + balance);
     }
 
     if (action.equals(DEPOSIT)) {
