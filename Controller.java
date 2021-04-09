@@ -25,7 +25,7 @@ public class Controller {
   // Choices for accounts
   private final static String SAVINGS = "1";
   private final static String CHECKING = "2";
-  //TODO return only these constants in selection and decide which account to use
+  // TODO return only these constants in selection and decide which account to use
 
   // Choice for account actions
   private final static String SEE_BALANCE = "1";
@@ -38,15 +38,21 @@ public class Controller {
     // Initialize scanner
     scanner = new Scanner(System.in);
 
-    //TODO init banks
+    // TODO init banks
 
     // Be strict with the date format being parsed
     DATE_FORMAT.setLenient(false);
 
     // Controller loop
     while (true) {
+      String[] card;
+      String cardNumber;
+      Bank bank;
+
       // wait for card
-      String cardNumber = waitForCard();
+      card = waitForCard();
+      cardNumber = card[CARD_NUMBER_I];
+      bank = getBank(card[BANK_NAME_I]);
 
       // wait for a valid pin number
       waitForPin(cardNumber);
@@ -87,8 +93,10 @@ public class Controller {
     return card;
   }
 
+  // Check if the card is valid
   private static boolean cardValid(String[] card) {
     Date expiration;
+    Bank bank;
 
     // Check if card has the correct number of fields
     if (card.length < NUM_CARD_DATA) {
@@ -97,13 +105,8 @@ public class Controller {
     }
 
     // Check if the bank exists
-    boolean bankExists = false;
-    for (Bank bank : banks) {
-      if (bank.getName().equals(card[BANK_NAME_I])) {
-        bankExists = true;
-      }
-    }
-    if (!bankExists) {
+    bank = getBank(card[BANK_NAME_I]);
+    if (bank == null) {
       return false;
     }
 
@@ -114,7 +117,7 @@ public class Controller {
     }
 
     // Check if the card number exists in the bank
-    if (!Bank.cardExists(card[CARD_NUMBER_I])) {
+    if (!bank.cardExists(card[CARD_NUMBER_I])) {
       System.out.println("Your card isn't registered with the bank.");
       return false;
     }
@@ -134,6 +137,17 @@ public class Controller {
     }
 
     return true;
+  }
+
+  // Search for and return the bank that matches the given name
+  private static Bank getBank(String bankName) {
+    for (Bank bank : banks) {
+      if (bank.getName().equals(bankName)) {
+        return bank;
+      }
+    }
+
+    return null;
   }
 
   // Wait for a valid pin to be given
