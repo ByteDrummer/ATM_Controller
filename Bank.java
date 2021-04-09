@@ -12,9 +12,9 @@ public class Bank {
 
   // Check the database to see if the card exists
   public static boolean cardExists(String cardNumber) {
-    JSONObject client = getClient(cardNumber);
+    Object[] result = getClient(cardNumber);
 
-    if (client == null) {
+    if (result == null) {
       return false;
     }
 
@@ -23,11 +23,13 @@ public class Bank {
 
   // Check the database to see if the pin for a specific card is correct
   public static boolean pinCorrect(String pin, String cardNumber) {
-    JSONObject client = getClient(cardNumber);
+    Object[] result = getClient(cardNumber);
 
-    if (client == null) {
+    if (result == null) {
       return false;
     }
+
+    JSONObject client = (JSONObject) result[0];
 
     if (pin.equals((String) client.get("pin"))) {
       return true;
@@ -36,28 +38,32 @@ public class Bank {
     return false;
   }
 
-  // Get the client for a specific card number
-  public static JSONObject getClient(String cardNumber) {
-    JSONArray clients = getClients();
+  // Get the client for a specific card number and return a reference to the
+  // database
+  public static Object[] getClient(String cardNumber) {
+    Object[] result = getClients();
+    JSONArray clients;
 
-    if (clients == null) {
+    if (result == null) {
       return null;
     }
+
+    clients = (JSONArray) getClients()[0];
 
     // Loop through the list of clients and find a matching one
     for (Object clientObj : clients) {
       JSONObject client = (JSONObject) clientObj;
 
       if (cardNumber.equals((String) client.get("cardNumber"))) {
-        return client;
+        return new Object[] { client, result[1] };
       }
     }
 
     return null;
   }
 
-  // Get a list of clients in the database
-  public static JSONArray getClients() {
+  // Get a list of clients in the database and retrun reference to the database
+  public static Object[] getClients() {
     FileReader reader;
     JSONParser parser = new JSONParser();
     JSONObject db;
@@ -79,13 +85,36 @@ public class Bank {
 
     clients = (JSONArray) db.get("clients");
 
-    return clients;
+    return new Object[] { clients, db };
   }
 
   public static long getBalance(String accountName, String cardNumber) {
-    JSONObject client = getClient(cardNumber);
-    JSONObject account = (JSONObject) client.get(accountName);
+    Object[] result = getAccount(accountName, cardNumber);
+
+    if (result == null) {
+      return  Long.MIN_VALUE;
+    }
+
+    JSONObject account = (JSONObject) result[0];
 
     return (long) account.get("balance");
   }
+
+  public static Object[] getAccount(String accountName, String cardNumber) {
+    Object[] result = getClient(cardNumber);
+
+    if (result == null) {
+      return  null;
+    }
+
+    JSONObject client = (JSONObject) result[0];
+    JSONObject account = (JSONObject) client.get(accountName);
+
+    return new Object[]{account, result[1]};
+  }
+
+  //public static void deposit(int quantity, String accountName, String cardNumber) {
+    //long balance = getBalance(accountName, cardNumber);
+    //balance += quantity;
+  //}
 }
