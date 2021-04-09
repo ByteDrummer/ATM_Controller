@@ -9,13 +9,15 @@ public class Bank {
   String name;
   ArrayList<Client> clients;
 
-  public Bank (String name) {
+  public Bank(String name) {
     this.name = name;
     clients = new ArrayList<Client>();
   }
 
-  public void addClient(String cardNumber, int checkingBalance, int savingsBalance) {
-    Client client = new Client(cardNumber, checkingBalance, savingsBalance);
+  public void addClient(String cardNumber, String pin, int checkingBalance, int savingsBalance) {
+    // check if client
+
+    Client client = new Client(cardNumber, pin, checkingBalance, savingsBalance);
     clients.add(client);
   }
 
