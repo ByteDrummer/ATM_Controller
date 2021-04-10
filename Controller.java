@@ -1,5 +1,6 @@
 import java.util.Date;
 import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,37 +53,42 @@ public class Controller {
       Bank bank;
       boolean pinValid;
 
-      do {
-        // wait for card
-        card = waitForCard();
-        cardNumber = card[CARD_NUMBER_I];
-        bank = getBank(card[BANK_NAME_I]);
+      try {
+        do {
+          // wait for card
+          card = waitForCard();
+          cardNumber = card[CARD_NUMBER_I];
+          bank = getBank(card[BANK_NAME_I]);
 
-        // wait for a valid pin number
-        pinValid = waitForPin(cardNumber, bank);
-      } while (!pinValid);
+          // wait for a valid pin number
+          pinValid = waitForPin(cardNumber, bank);
+        } while (!pinValid);
 
-      // loop while the user wants to switch accounts
-      String action;
-      do {
-        // wait for account choice
-        String account = waitForAccountChoice(cardNumber);
-        action = DONE; // default to done to avoid unexitable loop
+        // loop while the user wants to switch accounts
+        String action;
+        do {
+          // wait for account choice
+          String account = waitForAccountChoice(cardNumber);
+          action = DONE; // default to done to avoid unexitable loop
 
-        if (!account.equals(DONE)) {
-          // Loop while the user is not done with the current account
-          do {
-            // wait for choice of see balance/deposit/withdraw/done/switch account
-            action = waitForActionChoice();
+          if (!account.equals(DONE)) {
+            // Loop while the user is not done with the current account
+            do {
+              // wait for choice of see balance/deposit/withdraw/done/switch account
+              action = waitForActionChoice();
 
-            if (!action.equals(DONE) && !action.equals(SWITCH)) {
-              performAction(action, account, cardNumber, bank);
-            }
-          } while (!action.equals(DONE) && !action.equals(SWITCH));
-        }
-      } while (action.equals(SWITCH));
+              if (!action.equals(DONE) && !action.equals(SWITCH)) {
+                performAction(action, account, cardNumber, bank);
+              }
+            } while (!action.equals(DONE) && !action.equals(SWITCH));
+          }
+        } while (action.equals(SWITCH));
 
-      System.out.println("Goodbye!");
+        System.out.println("Goodbye!");
+      } catch (NoSuchElementException e) {
+        System.out.println("Reached end of input.");
+        System.exit(0);
+      }
     }
   }
 
