@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 public class Controller {
   // Input stream scanner
   private static Scanner scanner;
+
+  // List of banks
   private static Bank[] banks;
 
   // Delimiter used to separate card fields when card is read
@@ -31,7 +33,7 @@ public class Controller {
   private final static String DEPOSIT = "2";
   private final static String WITHDRAW = "3";
   private final static String SWITCH = "4";
-  private final static String DONE = "5";
+  private final static String DONE = "D";
 
   public static void main(String[] args) {
     // Initialize scanner
@@ -48,30 +50,36 @@ public class Controller {
       String[] card;
       String cardNumber;
       Bank bank;
+      boolean pinValid;
 
-      // wait for card
-      card = waitForCard();
-      cardNumber = card[CARD_NUMBER_I];
-      bank = getBank(card[BANK_NAME_I]);
+      do {
+        // wait for card
+        card = waitForCard();
+        cardNumber = card[CARD_NUMBER_I];
+        bank = getBank(card[BANK_NAME_I]);
 
-      // wait for a valid pin number
-      waitForPin(cardNumber, bank);
+        // wait for a valid pin number
+        pinValid = waitForPin(cardNumber, bank);
+      } while (!pinValid);
 
       // loop while the user wants to switch accounts
       String action;
       do {
         // wait for account choice
         String account = waitForAccountChoice(cardNumber);
+        action = DONE; // default to done to avoid unexitable loop
 
-        // Loop while the user is not done with the current account
-        do {
-          // wait for choice of see balance/deposit/withdraw/done/switch account
-          action = waitForActionChoice();
+        if (!account.equals(DONE)) {
+          // Loop while the user is not done with the current account
+          do {
+            // wait for choice of see balance/deposit/withdraw/done/switch account
+            action = waitForActionChoice();
 
-          if (!action.equals(DONE) && !action.equals(SWITCH)) {
-            performAction(action, account, cardNumber, bank);
-          }
-        } while (!action.equals(DONE) && !action.equals(SWITCH));
+            if (!action.equals(DONE) && !action.equals(SWITCH)) {
+              performAction(action, account, cardNumber, bank);
+            }
+          } while (!action.equals(DONE) && !action.equals(SWITCH));
+        }
       } while (action.equals(SWITCH));
 
       System.out.println("Goodbye!");
@@ -163,15 +171,31 @@ public class Controller {
     return null;
   }
 
-  // Wait for a valid pin to be given
-  private static void waitForPin(String cardNumber, Bank bank) {
-    String pin;
+  // Wait for a valid pin to be given or timeout after three attempts
+  private static boolean waitForPin(String cardNumber, Bank bank) {
+    boolean pinValid;
+    int counter = 0;
 
     do {
+      String pin;
+
       System.out.println("Enter your PIN number.");
 
       pin = scanner.nextLine();
-    } while (!pinValid(pin, cardNumber, bank)); // Loop while pin is invalid
+      pinValid = pinValid(pin, cardNumber, bank);
+
+      if (!pinValid) {
+        counter++;
+      }
+
+      if (counter == 3) {
+        System.out.println("Ending session after too many attempts.");
+        return false;
+      }
+
+    } while (!pinValid); // Loop while pin is invalid
+
+    return true;
   }
 
   private static boolean pinValid(String pin, String cardNumber, Bank bank) {
@@ -195,7 +219,7 @@ public class Controller {
     String choice;
 
     do {
-      System.out.println("Pick an account (1 checking, 2 savings).");
+      System.out.println("Pick an account (1 checking, 2 savings, D done).");
 
       choice = scanner.nextLine();
     } while (!accountValid(choice)); // Loop until a valid choice is given
@@ -204,7 +228,7 @@ public class Controller {
   }
 
   private static boolean accountValid(String choice) {
-    if (choice.equals(SAVINGS) || choice.equals(CHECKING)) {
+    if (choice.equals(SAVINGS) || choice.equals(CHECKING) || choice.equals(DONE)) {
       return true;
     }
 
@@ -217,7 +241,7 @@ public class Controller {
     String choice;
 
     do {
-      System.out.println("What would you like to do? (1 see balance, 2 deposit, 3 withdraw, 4 switch account, 5 done)");
+      System.out.println("What would you like to do? (1 see balance, 2 deposit, 3 withdraw, 4 switch account, D done)");
 
       choice = scanner.nextLine();
     } while (!actionValid(choice)); // Loop until a valid action is given
