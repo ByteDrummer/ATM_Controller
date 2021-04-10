@@ -23,8 +23,8 @@ public class Controller {
   private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/yy");
 
   // Choices for accounts
-  private final static String SAVINGS = "1";
-  private final static String CHECKING = "2";
+  private final static String CHECKING = "1";
+  private final static String SAVINGS = "2";
 
   // Choice for account actions
   private final static String SEE_BALANCE = "1";
@@ -195,7 +195,7 @@ public class Controller {
     String choice;
 
     do {
-      System.out.println("Pick an account (1 savings, 2 checking).");
+      System.out.println("Pick an account (1 checking, 2 savings).");
 
       choice = scanner.nextLine();
     } while (!accountValid(choice)); // Loop until a valid choice is given
