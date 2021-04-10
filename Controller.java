@@ -107,6 +107,8 @@ public class Controller {
 
       // Read a line and parse its fields by a delimiter
       String line = scanner.nextLine();
+      System.out.println(line);
+
       card = line.split(CARD_DELIMITER);
     } while (!cardValid(card)); // Loop while the card is invalid
 
@@ -182,6 +184,8 @@ public class Controller {
       System.out.println("Enter your PIN number.");
 
       pin = scanner.nextLine();
+      System.out.println(pin);
+
       pinValid = pinValid(pin, cardNumber, bank);
 
       if (!pinValid) {
@@ -222,6 +226,7 @@ public class Controller {
       System.out.println("Pick an account (1 checking, 2 savings, D done).");
 
       choice = scanner.nextLine();
+      System.out.println(choice);
     } while (!accountValid(choice)); // Loop until a valid choice is given
 
     return choice;
@@ -244,6 +249,7 @@ public class Controller {
       System.out.println("What would you like to do? (1 see balance, 2 deposit, 3 withdraw, 4 switch account, D done)");
 
       choice = scanner.nextLine();
+      System.out.println(choice);
     } while (!actionValid(choice)); // Loop until a valid action is given
 
     return choice;
@@ -281,7 +287,9 @@ public class Controller {
         System.out.println("Enter a quantity.");
 
         try {
-          quantity = Math.abs(scanner.nextInt());
+          quantity = scanner.nextInt();
+          System.out.println(quantity);
+          quantity = Math.abs(quantity);
         } catch (InputMismatchException e) { // In case input isn't an int
           System.out.println("Invalid quantity.");
           validInput = false;
