@@ -87,16 +87,16 @@ public class Controller {
     bank2.addClient("321", "321", 50, 25);
     bank2.addClient("4321", "4321", 6547, 769085);
 
-    banks = new Bank[]{bank1, bank2};
+    banks = new Bank[] { bank1, bank2 };
   }
 
   // Wait for a valid card to be inserted and return card's data
   private static String[] waitForCard() {
     String[] card;
 
-    System.out.println("Insert your card.");
-
     do {
+      System.out.println("Insert your card.");
+
       // Read a line and parse its fields by a delimiter
       String line = scanner.nextLine();
       card = line.split(CARD_DELIMITER);
@@ -119,6 +119,7 @@ public class Controller {
     // Check if the bank exists
     bank = getBank(card[BANK_NAME_I]);
     if (bank == null) {
+      System.out.println("Your bank is not supported here.");
       return false;
     }
 
@@ -166,9 +167,9 @@ public class Controller {
   private static void waitForPin(String cardNumber, Bank bank) {
     String pin;
 
-    System.out.println("Enter your PIN number.");
-
     do {
+      System.out.println("Enter your PIN number.");
+
       pin = scanner.nextLine();
     } while (!pinValid(pin, cardNumber, bank)); // Loop while pin is invalid
   }
@@ -193,9 +194,9 @@ public class Controller {
   private static String waitForAccountChoice(String cardNumber) {
     String choice;
 
-    System.out.println("Pick an account (1 savings, 2 checking).");
-
     do {
+      System.out.println("Pick an account (1 savings, 2 checking).");
+
       choice = scanner.nextLine();
     } while (!accountValid(choice)); // Loop until a valid choice is given
 
@@ -215,9 +216,9 @@ public class Controller {
   private static String waitForActionChoice() {
     String choice;
 
-    System.out.println("What would you like to do? (1 see balance, 2 deposit, 3 withdraw, 4 switch account, 5 done)");
-
     do {
+      System.out.println("What would you like to do? (1 see balance, 2 deposit, 3 withdraw, 4 switch account, 5 done)");
+
       choice = scanner.nextLine();
     } while (!actionValid(choice)); // Loop until a valid action is given
 
@@ -250,10 +251,10 @@ public class Controller {
       int quantity = 0;
       boolean validInput;
 
-      System.out.println("Enter a quantity.");
-
       do {
         validInput = true;
+
+        System.out.println("Enter a quantity.");
 
         try {
           quantity = Math.abs(scanner.nextInt());
@@ -269,7 +270,7 @@ public class Controller {
         quantity = -1 * quantity;
       }
 
-      if (account.equals(CHECKING)){
+      if (account.equals(CHECKING)) {
         bank.updateChecking(quantity, cardNumber);
       } else {
         bank.updateSavings(quantity, cardNumber);
